@@ -1,5 +1,8 @@
 
 #忽略文件设置
+/KillVirus_ott/*
+!/KillVirus_ott/Assets/ftproject/script/
+
 /PigvsZombie_ott
 /*.rar
 /消灭病毒源码
