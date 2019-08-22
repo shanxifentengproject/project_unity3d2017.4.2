@@ -55,8 +55,10 @@ class GameBaseDefine
         //<!--打开宝箱，多少关前免费 btnindex在这里0代表放弃  1代表单开，2代表全开-->
         public int closeLevel_Treasure;
         public int closeLevel_Treasure_BtnIndex;
-        //<!--首页退出游戏界面 默认按钮位置-->
+        //<!--退出游戏界面 默认按钮位置-->
         public int closeLevel_ExitGameDlg_BtnIndex;
+        //<!--战斗失败游戏界面 默认按钮位置 btnindex = 0 代表重新开始， 1 代表返回-->
+        public int closeLevel_FailedGameDlg_BtnIndex;
         //<!--资金不足界面 默认按钮位置-->
         public int closeLevel_RechargeAsk_BtnIndex;
         //<!--复活界面 默认按钮位置 ，btnindex在这里0代表复活  1代表放弃-->
@@ -184,6 +186,8 @@ class GameBaseDefine
         platformChargeIntensityData.closeLevel_Treasure_BtnIndex = Convert.ToInt32 ( node.SelectSingleNode ( "Treasure" ).Attribute ( "btnindex" ) );
         //<!--首页退出游戏界面 默认按钮位置-->
         platformChargeIntensityData.closeLevel_ExitGameDlg_BtnIndex = Convert.ToInt32 ( node.SelectSingleNode ( "ExitGameDlg" ).Attribute ( "btnindex" ) );
+        //<!--战斗失败游戏界面 默认按钮位置-->
+        platformChargeIntensityData.closeLevel_FailedGameDlg_BtnIndex = Convert.ToInt32(node.SelectSingleNode("FailedGameDlg").Attribute("btnindex"));
         //<!--资金不足界面 默认按钮位置-->
         platformChargeIntensityData.closeLevel_RechargeAsk_BtnIndex = Convert.ToInt32 ( node.SelectSingleNode ( "RechargeAsk" ).Attribute ( "btnindex" ) );
         //<!--复活界面 默认按钮位置 ，btnindex在这里0代表复活  1代表放弃-->

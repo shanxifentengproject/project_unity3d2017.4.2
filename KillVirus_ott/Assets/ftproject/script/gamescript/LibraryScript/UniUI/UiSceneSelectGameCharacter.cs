@@ -1,4 +1,5 @@
-﻿using System;
+﻿//#define TEST_ACTIVE_FUWUQI //测试激活副武器
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 class UiSceneSelectGameCharacter : GuiUiSceneBase
@@ -49,6 +50,11 @@ class UiSceneSelectGameCharacter : GuiUiSceneBase
     public GameObject btn_secondaryWeaponMoneyA;
     public GameObject btn_secondaryWeaponMoneyB;
     public GameObject secondaryWeaponChild;
+    /// <summary>
+    /// 副武器购买或升级金币数量背景控制
+    /// </summary>
+    public QyChangeMatrial m_secondaryWeaponMoneyBg;
+
     /// <summary>
     /// 收益按键
     /// </summary>
@@ -129,6 +135,9 @@ class UiSceneSelectGameCharacter : GuiUiSceneBase
         Weapon08 = 7,
         BtCount = 8,
     }
+    /// <summary>
+    /// 当前光标左右移动之后的副武器标记
+    /// </summary>
     ButtonId_SecondaryWeaponLR m_ButtonId_SecondaryWeaponLR = ButtonId_SecondaryWeaponLR.Null;
 
     CharacterId SecondaryWeaponLRToCharacterId(ButtonId_SecondaryWeaponLR lr)
@@ -153,8 +162,10 @@ class UiSceneSelectGameCharacter : GuiUiSceneBase
 
     void InitPanel()
     {
-        //TestActiveAllChildWeapon(); //test
-
+#if TEST_ACTIVE_FUWUQI
+        TestActiveAllChildWeapon(); //test
+#endif
+        ActivePlayerDefaultCharacter();
         btn_secondaryWeaponSelectArray = new GameObject[8];
         btn_secondaryWeaponSelectArray[0] = btn_secondaryWeaponChild01.transform.GetChild(0).gameObject;
         btn_secondaryWeaponSelectArray[1] = btn_secondaryWeaponChild02.transform.GetChild(0).gameObject;
@@ -935,7 +946,16 @@ class UiSceneSelectGameCharacter : GuiUiSceneBase
             case CharacterId.ChildWeapon07:
             case CharacterId.ChildWeapon08:
                 {
-                    m_FuWeaponData.SetSelectAttribute(m_UpgradeAttribute);
+                    bool isActive = GetIsActiveCharacter(id);
+                    if (false == isActive)
+                    {
+                        int buyMoney = IGamerProfile.gameCharacter.characterDataList[(int)id].buyMoney;
+                        m_FuWeaponData.SetCharacterBuyMoneyInfo(buyMoney);
+                    }
+                    else
+                    {
+                        m_FuWeaponData.SetSelectAttribute(m_UpgradeAttribute);
+                    }
                     break;
                 }
         }
@@ -1017,6 +1037,31 @@ class UiSceneSelectGameCharacter : GuiUiSceneBase
             IGamerProfile.Instance.playerdata.characterData[i].isactive = i < (int)CharacterId.ShouYi ? true : false;
         }
         IGamerProfile.Instance.SaveGamerProfileToServer();
+    }
+
+    void ActivePlayerDefaultCharacter()
+    {
+        bool isSave = false;
+        if (false == GetIsActiveCharacter(CharacterId.MainWeapon))
+        {
+            isSave = true;
+            IGamerProfile.Instance.playerdata.characterData[(int)CharacterId.MainWeapon].isactive = true;
+        }
+        if (false == GetIsActiveCharacter(CharacterId.ChildWeapon01))
+        {
+            isSave = true;
+            IGamerProfile.Instance.playerdata.characterData[(int)CharacterId.ChildWeapon01].isactive = true;
+        }
+        if (false == GetIsActiveCharacter(CharacterId.ShouYi))
+        {
+            isSave = true;
+            IGamerProfile.Instance.playerdata.characterData[(int)CharacterId.ShouYi].isactive = true;
+        }
+
+        if (true == isSave)
+        {
+            IGamerProfile.Instance.SaveGamerProfileToServer();
+        }
     }
 
     [Serializable]
@@ -1195,6 +1240,14 @@ class UiSceneSelectGameCharacter : GuiUiSceneBase
             //Debug.Log("att ================ " + att + ", payMoneyCur == " + payMoneyCur);
         }
 
+        /// <summary>
+        /// 设置武器购买价格
+        /// </summary>
+        public void SetCharacterBuyMoneyInfo(int money)
+        {
+            payMoneyCur = money;
+        }
+
         public void ResetData()
         {
             payMoneyA = defaultValue;
@@ -1367,7 +1420,7 @@ class UiSceneSelectGameCharacter : GuiUiSceneBase
         }
         if (isUpgradeB == true)
         {
-            m_MainWeaponData.payMoneyB = characterDt.LevelAToMoney.GetValue(dt.levelB);
+            m_MainWeaponData.payMoneyB = characterDt.LevelBToMoney.GetValue(dt.levelB);
         }
 
         if (GetIsUpgradeCharacter(CharacterId.MainWeapon, CharacterAttribute.AttributeA) == false
@@ -1409,7 +1462,7 @@ class UiSceneSelectGameCharacter : GuiUiSceneBase
                 {
                     //请求升级
                     IGamerProfile.Instance.PayMoney(new IGamerProfile.PayMoneyData(IGamerProfile.PayMoneyItem.PayMoneyItem_LevelCharacter,
-                                                IGamerProfile.gameCharacter.characterDataList[(int)m_UpgradeCharacterId].LevelAToMoney.GetValue(
+                                                IGamerProfile.gameCharacter.characterDataList[(int)m_UpgradeCharacterId].LevelBToMoney.GetValue(
                                                         IGamerProfile.Instance.playerdata.characterData[(int)m_UpgradeCharacterId].levelB),
                                                 0,
                                                 PayMoneyCallback), this);
@@ -1594,7 +1647,7 @@ class UiSceneSelectGameCharacter : GuiUiSceneBase
         }
         if (isUpgradeB == true)
         {
-            m_ShouYiData.payMoneyB = characterDt.LevelAToMoney.GetValue(dt.levelB);
+            m_ShouYiData.payMoneyB = characterDt.LevelBToMoney.GetValue(dt.levelB);
         }
 
         if (GetIsUpgradeCharacter(CharacterId.ShouYi, CharacterAttribute.AttributeA) == false
@@ -1636,7 +1689,7 @@ class UiSceneSelectGameCharacter : GuiUiSceneBase
                 {
                     //请求升级
                     IGamerProfile.Instance.PayMoney(new IGamerProfile.PayMoneyData(IGamerProfile.PayMoneyItem.PayMoneyItem_LevelCharacter,
-                                                IGamerProfile.gameCharacter.characterDataList[(int)m_UpgradeCharacterId].LevelAToMoney.GetValue(
+                                                IGamerProfile.gameCharacter.characterDataList[(int)m_UpgradeCharacterId].LevelBToMoney.GetValue(
                                                         IGamerProfile.Instance.playerdata.characterData[(int)m_UpgradeCharacterId].levelB),
                                                 0,
                                                 PayMoneyCallback), this);
@@ -1927,7 +1980,7 @@ class UiSceneSelectGameCharacter : GuiUiSceneBase
     }
 
     /// <summary>
-    /// 更新主武器UI数据
+    /// 更新副武器UI数据
     /// </summary>
     void UpdateFuWeaponData(CharacterId id)
     {
@@ -1959,7 +2012,7 @@ class UiSceneSelectGameCharacter : GuiUiSceneBase
         }
         if (isUpgradeB == true && isActive == true)
         {
-            m_FuWeaponData.payMoneyB = characterDt.LevelAToMoney.GetValue(dt.levelB);
+            m_FuWeaponData.payMoneyB = characterDt.LevelBToMoney.GetValue(dt.levelB);
         }
 
         if (GetIsUpgradeCharacter(id, CharacterAttribute.AttributeA) == false
@@ -1972,17 +2025,24 @@ class UiSceneSelectGameCharacter : GuiUiSceneBase
         {
             if (m_SelectChildWeaponId != CharacterId.Null)
             {
-                bool isUpgrade = true;
+                //bool isUpgrade = true;
+                bool isActiveCharacter = true;
                 if (m_ButtonId_SecondaryWeaponLR != ButtonId_SecondaryWeaponLR.Null)
                 {
                     CharacterId idLR = SecondaryWeaponLRToCharacterId(m_ButtonId_SecondaryWeaponLR);
-                    if (idLR != m_SelectChildWeaponId)
-                    {
-                        //当前光标和所选中的副武器不一致
-                        isUpgrade = false;
-                    }
+                    //if (idLR != m_SelectChildWeaponId)
+                    //{
+                    //    //当前光标和所选中的副武器不一致
+                    //    isUpgrade = false;
+                    //}
+                    isActiveCharacter = GetIsActiveCharacter(idLR);
                 }
-                QyFun.SetActive(btn_secondaryWeaponActive, isUpgrade);
+                //QyFun.SetActive(btn_secondaryWeaponActive, isUpgrade);
+                QyFun.SetActive(btn_secondaryWeaponActive, true);
+                if (m_secondaryWeaponMoneyBg != null)
+                {
+                    m_secondaryWeaponMoneyBg.ChangeMatrial(true == isActiveCharacter ? QyChangeMatrial.ChangeState.Old : QyChangeMatrial.ChangeState.New);
+                }
                 UpdateUpgradeAttribute(id);
             }
             else
@@ -2029,7 +2089,7 @@ class UiSceneSelectGameCharacter : GuiUiSceneBase
                 {
                     //请求升级
                     IGamerProfile.Instance.PayMoney(new IGamerProfile.PayMoneyData(IGamerProfile.PayMoneyItem.PayMoneyItem_LevelCharacter,
-                                                IGamerProfile.gameCharacter.characterDataList[(int)m_UpgradeCharacterId].LevelAToMoney.GetValue(
+                                                IGamerProfile.gameCharacter.characterDataList[(int)m_UpgradeCharacterId].LevelBToMoney.GetValue(
                                                         IGamerProfile.Instance.playerdata.characterData[(int)m_UpgradeCharacterId].levelB),
                                                 0,
                                                 PayMoneyCallback), this);
@@ -2076,6 +2136,7 @@ class UiSceneSelectGameCharacter : GuiUiSceneBase
                     if (m_SelectChildWeaponId != CharacterId.Null)
                     {
                         bool isUpgrade = true;
+                        bool isActiveCharacter = true;
                         if (m_ButtonId_SecondaryWeaponLR != ButtonId_SecondaryWeaponLR.Null)
                         {
                             CharacterId id = SecondaryWeaponLRToCharacterId(m_ButtonId_SecondaryWeaponLR);
@@ -2083,12 +2144,29 @@ class UiSceneSelectGameCharacter : GuiUiSceneBase
                             {
                                 //当前光标和所选中的副武器不一致
                                 isUpgrade = false;
+                                isActiveCharacter = GetIsActiveCharacter(id);
                             }
                         }
 
                         if (isUpgrade == true)
                         {
+                            //升级副武器
                             UpgradeFuWeapon(m_SelectChildWeaponId);
+                        }
+                        else
+                        {
+                            if (false == isActiveCharacter)
+                            {
+                                //购买副武器
+                                CharacterId id = SecondaryWeaponLRToCharacterId(m_ButtonId_SecondaryWeaponLR);
+                                IGamerProfile.Instance.PayMoney(new IGamerProfile.PayMoneyData(IGamerProfile.PayMoneyItem.PayMoneyItem_ActiveCharacter,
+                                                            IGamerProfile.gameCharacter.characterDataList[(int)id].buyMoney,
+                                                            0, PayMoneyCallback), this);
+                                if (IGamerProfile.Instance.playerdata.playerMoney < IGamerProfile.gameCharacter.characterDataList[(int)id].buyMoney)
+                                {
+                                    HiddenCharacter();
+                                }
+                            }
                         }
                     }
                     break;
@@ -2147,8 +2225,34 @@ class UiSceneSelectGameCharacter : GuiUiSceneBase
 
     private void PayMoneyCallback(IGamerProfile.PayMoneyData paydata, bool isSucceed)
     {
-        if (m_UpgradeCharacterId == CharacterId.Null)
+        if (m_UpgradeCharacterId == CharacterId.Null
+            || paydata.item == IGamerProfile.PayMoneyItem.PayMoneyItem_ActiveCharacter)
         {
+            //购买副武器
+            if (true == isSucceed)
+            {
+                //播放一个触发光效
+                GameObject obj = LoadResource_UIPrefabs("SelectChracterEffect.prefab");
+                obj.transform.SetParent(transform);
+
+                CharacterId id = SecondaryWeaponLRToCharacterId(m_ButtonId_SecondaryWeaponLR);
+                ShowCharacter(id);
+
+                //激活武器
+                IGamerProfile.Instance.playerdata.characterData[(int)id].isactive = true;
+                IGamerProfile.Instance.SaveGamerProfileToServer();
+
+                //刷新用户钱
+                playerMoney.SetIntegerRollValue(IGamerProfile.Instance.playerdata.playerMoney);
+                UpdateFuWeaponData(id);
+                UpdateUpgradeAttribute(id);
+
+                m_secondaryWeaponMoneyBg.ChangeMatrial(QyChangeMatrial.ChangeState.Old);
+                UpdateFuWeaponButton(id);
+
+                m_SelectChildWeaponId = id;
+                ShowFuWeaponSelectImg();
+            }
             return;
         }
 
@@ -2191,6 +2295,7 @@ class UiSceneSelectGameCharacter : GuiUiSceneBase
                 {
                     if (isSucceed)
                     {
+                        //升级武器
                         UpdateFuWeaponData(m_UpgradeCharacterId);
                     }
                     break;
@@ -2248,6 +2353,14 @@ class UiSceneSelectGameCharacter : GuiUiSceneBase
         for (int i = 0; i < m_PlayerArray.Length; i++)
         {
             QyFun.SetActive(m_PlayerArray[i], index == i ? true : false);
+        }
+    }
+
+    void HiddenCharacter()
+    {
+        for (int i = 0; i < m_PlayerArray.Length; i++)
+        {
+            QyFun.SetActive(m_PlayerArray[i], false);
         }
     }
 }

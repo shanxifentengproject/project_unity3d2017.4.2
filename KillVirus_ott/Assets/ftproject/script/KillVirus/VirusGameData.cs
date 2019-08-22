@@ -131,22 +131,22 @@ public class VirusGameDataAdapter
             _gameData.Level++;
         }
 
-        if (IGamerProfile.Instance != null)
-        {
-            int weaponLevel = VirusTool.UnlockViceWeapon(_gameData.Level);
-            if (weaponLevel >= (int)UiSceneSelectGameCharacter.CharacterId.ChildWeapon01
-                && weaponLevel <= (int)UiSceneSelectGameCharacter.CharacterId.ChildWeaponCount)
-            {
-                if (IGamerProfile.Instance.playerdata.characterData[weaponLevel].isactive == false)
-                {
-                    //解锁副武器
-                    //标记当前角色解锁
-                    IGamerProfile.Instance.playerdata.characterData[weaponLevel].isactive = true;
-                    //存储档案
-                    IGamerProfile.Instance.SaveGamerProfileToServer();
-                }
-            }
-        }
+        //if (IGamerProfile.Instance != null)
+        //{
+        //    int weaponLevel = VirusTool.UnlockViceWeapon(_gameData.Level);
+        //    if (weaponLevel >= (int)UiSceneSelectGameCharacter.CharacterId.ChildWeapon01
+        //        && weaponLevel <= (int)UiSceneSelectGameCharacter.CharacterId.ChildWeaponCount)
+        //    {
+        //        if (IGamerProfile.Instance.playerdata.characterData[weaponLevel].isactive == false)
+        //        {
+        //            //解锁副武器
+        //            //标记当前角色解锁
+        //            IGamerProfile.Instance.playerdata.characterData[weaponLevel].isactive = true;
+        //            //存储档案
+        //            IGamerProfile.Instance.SaveGamerProfileToServer();
+        //        }
+        //    }
+        //}
     }
 
     public static void MinusTotalCoin(int value)

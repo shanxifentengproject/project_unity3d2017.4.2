@@ -42,37 +42,44 @@ public class VirusGameMrg : Singleton<VirusGameMrg>, IEventListener<VirusGameSta
         _fsm.ChangeState(VirusGameState.Load);
         _uiMrg.SettlePanel.UnActive();
         _uiMrg.RestartPanel.UnActive();
+        _uiMrg.FailedPanel.UnActive();
+        _uiMrg.ExitPanel.UnActive();
         _uiMrg.CoinPanel.SetCoinText();
         virusMrg.BindView(_uiMrg.MainPanel);
-    }
-   
+    }   
 
     private void OnEnable()
     {
         EventRegister.EventStartListening<VirusGameStateEvent>(this);
         EventRegister.EventStartListening<FirstByteClick5DownEvent>(this);
-        if (IGamerProfile.Instance != null)
-        {
-            InputKillVirus.Instance.AddEvent(ClickEnterBtEvent, InputKillVirus.EventState.Enter);
-        }
+        InputKillVirus.Instance.AddEvent(ClickEnterBtEvent, InputKillVirus.EventState.Enter);
+        InputKillVirus.Instance.AddEvent(ClickEscBtEvent, InputKillVirus.EventState.Esc);
     }
 
     private void OnDisable()
     {
         EventRegister.EventStopListening<VirusGameStateEvent>(this);
         EventRegister.EventStopListening<FirstByteClick5DownEvent>(this);
-        if (IGamerProfile.Instance != null)
-        {
-            InputKillVirus.Instance.RemoveEvent(ClickEnterBtEvent, InputKillVirus.EventState.Enter);
-        }
+        InputKillVirus.Instance.RemoveEvent(ClickEnterBtEvent, InputKillVirus.EventState.Enter);
+        InputKillVirus.Instance.RemoveEvent(ClickEscBtEvent, InputKillVirus.EventState.Esc);
     }
 
     private void ClickEnterBtEvent(InputKillVirus.ButtonState val)
     {
         if (val == InputKillVirus.ButtonState.UP)
         {
-            //_isClickSpace = true;
             EventManager.TriggerEvent(new FirstByteClick5DownEvent());
+        }
+    }
+
+    private void ClickEscBtEvent(InputKillVirus.ButtonState val)
+    {
+        if (val == InputKillVirus.ButtonState.UP)
+        {
+            if (_uiMrg.ExitPanel.gameObject.activeInHierarchy == false && VirusPlayer.Invincible == false)
+            {
+                _uiMrg.ExitPanel.Active();
+            }
         }
     }
 
@@ -268,34 +275,12 @@ public class VirusGameMrg : Singleton<VirusGameMrg>, IEventListener<VirusGameSta
         });
         sq.AppendInterval(0.5f);
         sq.AppendCallback(() => { _isSettle = true; });
-    }
-
-    class KeyCodeTV
-    {
-        /// <summary>
-        /// 遥控器确定键的键值.
-        /// </summary>
-        public static KeyCode PadEnter01 = (KeyCode)10;
-        public static KeyCode PadEnter02 = (KeyCode)66;
+        _isClickSpace = false;
     }
 
     [FSM("Settle", FSMActionName.Update)]
     private void OnSettleUpdate()
     {
-        if (IGamerProfile.Instance == null)
-        {
-            if (Input.GetKeyUp(KeyCode.KeypadEnter)
-                || Input.GetKeyUp(KeyCode.Return)
-                || Input.GetKeyUp(KeyCodeTV.PadEnter01)
-                || Input.GetKeyUp(KeyCodeTV.PadEnter02)
-                || Input.GetKeyUp(KeyCode.JoystickButton0))
-            {
-                //监听遥控器确定键消息
-                //_isClickSpace = true;
-                EventManager.TriggerEvent(new FirstByteClick5DownEvent());
-            }
-        }
-
         if (_isClickSpace && !_isGetAward && _isSettle)
         {
             Sequence sq = DOTween.Sequence();
@@ -326,7 +311,6 @@ public class VirusGameMrg : Singleton<VirusGameMrg>, IEventListener<VirusGameSta
             sq.AppendCallback(() => { _uiMrg.SettlePanel.UnActive(); });
             sq.AppendInterval(0.5f);
             sq.AppendCallback(() => { _fsm.ChangeState(VirusGameState.ShowTitle); });
-            
         }
     }
 
@@ -342,49 +326,34 @@ public class VirusGameMrg : Singleton<VirusGameMrg>, IEventListener<VirusGameSta
             _virusPlayer.CurViceWeapon.ReIniti();
         _virusPlayer.gameObject.SetActive(false);
         _gameOverTime = 5;
+        _isClickSpace = false;
     }
 
 
     [FSM("GameOver", FSMActionName.Update)]
     private void OnGameOverUpdate()
     {
-        //_gameOverTime -= Time.deltaTime;
-        //if (_gameOverTime <= 0)
-        //{
-        //    _gameOverTime = 0;
-        //    _uiMrg.RestartPanel.SetLeftTime(0);
-        //    //SceneManager.LoadScene("SelectUI");
-        //    if (IGamerProfile.Instance != null)
-        //    {
-        //        SceneManager.LoadScene("UI");
-        //    }
-        //    else
-        //    {
-        //        SceneManager.LoadScene("game1");
-        //    }
-        //    return;
-        //}
+        _gameOverTime -= Time.deltaTime;
+        if (_gameOverTime <= 0)
+        {
+            _gameOverTime = 0;
+            _uiMrg.RestartPanel.SetLeftTime(0);
+            _uiMrg.RestartPanel.UnActive();
+            _uiMrg.FailedPanel.Active();
+            _fsm.ChangeState(VirusGameState.None);
+            return;
+        }
 
-        //if (IGamerProfile.Instance == null)
-        //{
-        //    if (Input.GetKeyDown(KeyCode.Space))
-        //    {
-        //        //_isClickSpace = true;
-        //        EventManager.TriggerEvent(new FirstByteClick5DownEvent());
-        //    }
-        //}
-
-        //if (_isClickSpace)
-        //{
-        //    _isClickSpace = false;
-        //    _uiMrg.RestartPanel.UnActive();
-        //    _virusPlayer.Revive();
-        //    _virusPlayer.gameObject.SetActive(true);
-        //    _virusPlayer.transform.position = new Vector3(0f, -5f, 0f);
-        //    _virusPlayer.SetPlayerState(true, true);
-        //    _fsm.ChangeState(VirusGameState.None);
-        //}
-        //_uiMrg.RestartPanel.SetLeftTime(Mathf.CeilToInt(_gameOverTime));
-
+        if (_isClickSpace)
+        {
+            _isClickSpace = false;
+            _uiMrg.RestartPanel.UnActive();
+            _virusPlayer.Revive();
+            _virusPlayer.gameObject.SetActive(true);
+            _virusPlayer.transform.position = new Vector3(0f, -5f, 0f);
+            _virusPlayer.SetPlayerState(true, true);
+            _fsm.ChangeState(VirusGameState.None);
+        }
+        _uiMrg.RestartPanel.SetLeftTime(Mathf.CeilToInt(_gameOverTime));
     }
 }

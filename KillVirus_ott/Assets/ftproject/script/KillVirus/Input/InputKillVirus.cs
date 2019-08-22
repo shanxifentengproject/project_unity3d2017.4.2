@@ -17,6 +17,14 @@ public class InputKillVirus : MonoBehaviour
             return _Instance;
         }
     }
+    class KeyCodeTV
+    {
+        /// <summary>
+        /// 遥控器确定键的键值.
+        /// </summary>
+        public static KeyCode PadEnter01 = (KeyCode)10;
+        public static KeyCode PadEnter02 = (KeyCode)66;
+    }
     public enum ButtonState
     {
         DOWN = 0,
@@ -225,11 +233,19 @@ public class InputKillVirus : MonoBehaviour
         }
         else
         {
-            if (Input.GetKeyDown(KeyCode.Return))
+            if (Input.GetKeyDown(KeyCode.KeypadEnter)
+                || Input.GetKeyDown(KeyCode.Return)
+                || Input.GetKeyDown(KeyCodeTV.PadEnter01)
+                || Input.GetKeyDown(KeyCodeTV.PadEnter02)
+                || Input.GetKeyDown(KeyCode.JoystickButton0))
             {
                 ClickEnterBt(ButtonState.DOWN);
             }
-            else if (Input.GetKeyUp(KeyCode.Return))
+            else if (Input.GetKeyUp(KeyCode.KeypadEnter)
+                || Input.GetKeyUp(KeyCode.Return)
+                || Input.GetKeyUp(KeyCodeTV.PadEnter01)
+                || Input.GetKeyUp(KeyCodeTV.PadEnter02)
+                || Input.GetKeyUp(KeyCode.JoystickButton0))
             {
                 ClickEnterBt(ButtonState.UP);
             }

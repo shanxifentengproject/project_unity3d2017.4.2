@@ -46,7 +46,7 @@ public class VirusPlayer : MonoBehaviour
 
     private void Start()
     {
-        _invincible = false;
+        Invincible = true;
         VirusPlayerDataAdapter.Load();
         _shootAudioSource.Stop();
         _shootEffect.InitiShootEffect(ShootEffectEnum.Normal);
@@ -79,7 +79,7 @@ public class VirusPlayer : MonoBehaviour
 
     public void OnPlayerDeath()
     {
-        if (!_invincible)
+        if (!Invincible)
         {
             EventManager.TriggerEvent(new VirusGameStateEvent(VirusGameState.GameOver));
             VirusSoundMrg.Instance.PlaySound(VirusSoundType.PlayerDeath);
@@ -89,8 +89,8 @@ public class VirusPlayer : MonoBehaviour
     public void Revive()
     {
         _forceViruses = new List<BaseVirus>();
-        _invincible = true;
-        _shootEffect.Flash(() => { _invincible = false; });
+        Invincible = true;
+        _shootEffect.Flash(() => { Invincible = false; });
     }
 
     public void Upgrade()

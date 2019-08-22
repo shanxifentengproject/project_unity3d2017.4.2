@@ -14,9 +14,13 @@ class GameCharacter
         public int maxlevelA;
         public int maxlevelB;
         /// <summary>
-        /// 多少关之后可以解锁该装备
+        /// 多少关之后可以解锁该装备(关闭该功能)
         /// </summary>
         public int unlock;
+        /// <summary>
+        /// 装备购买价格
+        /// </summary>
+        public int buyMoney;
         public struct Curvei2
         {
             public int A;
@@ -63,6 +67,7 @@ class GameCharacter
             characterDataList[i].maxlevelA = Convert.ToInt32(n.Attribute("maxlevelA"));
             characterDataList[i].maxlevelB = Convert.ToInt32(n.Attribute("maxlevelB"));
             characterDataList[i].unlock = Convert.ToInt32(n.Attribute("unlock"));
+            characterDataList[i].buyMoney = Convert.ToInt32(n.Attribute("buyMoney"));
 
             n1 = n.SelectSingleNode("LevelAToMoney");
             characterDataList[i].LevelAToMoney = new CharacterData.Curvei2(Convert.ToInt32(n1.Attribute("a")),
