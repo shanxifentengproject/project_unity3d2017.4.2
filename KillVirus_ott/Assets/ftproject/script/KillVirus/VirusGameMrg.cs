@@ -22,6 +22,7 @@ public class VirusGameMrg : Singleton<VirusGameMrg>, IEventListener<VirusGameSta
 
 
     private StateMachine<VirusGameState> _fsm;
+    internal StateMachine<VirusGameState> m_fsm { get { return _fsm; } }
     private bool _firstIn;
     private bool _isGetAward;
     private bool _isClickSpace;
@@ -333,27 +334,27 @@ public class VirusGameMrg : Singleton<VirusGameMrg>, IEventListener<VirusGameSta
     [FSM("GameOver", FSMActionName.Update)]
     private void OnGameOverUpdate()
     {
-        _gameOverTime -= Time.deltaTime;
-        if (_gameOverTime <= 0)
-        {
-            _gameOverTime = 0;
-            _uiMrg.RestartPanel.SetLeftTime(0);
-            _uiMrg.RestartPanel.UnActive();
-            _uiMrg.FailedPanel.Active();
-            _fsm.ChangeState(VirusGameState.None);
-            return;
-        }
+        //_gameOverTime -= Time.deltaTime;
+        //if (_gameOverTime <= 0)
+        //{
+        //    _gameOverTime = 0;
+        //    _uiMrg.RestartPanel.SetLeftTime(0);
+        //    _uiMrg.RestartPanel.UnActive();
+        //    _uiMrg.FailedPanel.Active();
+        //    _fsm.ChangeState(VirusGameState.None);
+        //    return;
+        //}
 
-        if (_isClickSpace)
-        {
-            _isClickSpace = false;
-            _uiMrg.RestartPanel.UnActive();
-            _virusPlayer.Revive();
-            _virusPlayer.gameObject.SetActive(true);
-            _virusPlayer.transform.position = new Vector3(0f, -5f, 0f);
-            _virusPlayer.SetPlayerState(true, true);
-            _fsm.ChangeState(VirusGameState.None);
-        }
-        _uiMrg.RestartPanel.SetLeftTime(Mathf.CeilToInt(_gameOverTime));
+        //if (_isClickSpace)
+        //{
+        //    _isClickSpace = false;
+        //    _uiMrg.RestartPanel.UnActive();
+        //    _virusPlayer.Revive();
+        //    _virusPlayer.gameObject.SetActive(true);
+        //    _virusPlayer.transform.position = new Vector3(0f, -5f, 0f);
+        //    _virusPlayer.SetPlayerState(true, true);
+        //    _fsm.ChangeState(VirusGameState.None);
+        //}
+        //_uiMrg.RestartPanel.SetLeftTime(Mathf.CeilToInt(_gameOverTime));
     }
 }

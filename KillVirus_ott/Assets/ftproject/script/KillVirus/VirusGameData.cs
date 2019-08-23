@@ -77,6 +77,11 @@ public class VirusGameDataAdapter
         _gameData.TotalCoin += value;
     }
 
+    public static void UpdateTotalCoin(int value)
+    {
+        _gameData.TotalCoin = value;
+    }
+
     /// <summary>
     /// 单个金币代表的价值
     /// </summary>

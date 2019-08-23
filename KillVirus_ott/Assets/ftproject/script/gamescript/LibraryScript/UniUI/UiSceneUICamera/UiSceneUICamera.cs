@@ -24,6 +24,7 @@ class UiSceneUICamera : GuiUiSceneManager
         Id_UIGameLoginAward,
         Id_UICharacterLevelSale,
         Id_UINotEnoughMoney,
+        Id_UIGameBuyCoins,
     }
 
     private static UiSceneUICamera myInstance = null;
@@ -76,6 +77,8 @@ class UiSceneUICamera : GuiUiSceneManager
                 return ActiveAloneUiScene("gamemap.prefab", args);
             case UiSceneUICamera.UISceneId.Id_UIGameCharacter:
                 return ActiveAloneUiScene("gamecharacter.prefab", args);
+            case UiSceneUICamera.UISceneId.Id_UIGameBuyCoins:
+                return ActiveAloneUiScene("gameBuyCoins.prefab", args);
             case UiSceneUICamera.UISceneId.Id_UIGameMain:
                 return ActiveAloneUiScene("gamemain.prefab", args);
             case UiSceneUICamera.UISceneId.Id_UIGameOver:

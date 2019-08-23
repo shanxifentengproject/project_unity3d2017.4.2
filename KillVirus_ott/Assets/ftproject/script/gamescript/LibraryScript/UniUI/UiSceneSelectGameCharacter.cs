@@ -1451,21 +1451,27 @@ class UiSceneSelectGameCharacter : GuiUiSceneBase
             case CharacterAttribute.AttributeA:
                 {
                     //请求升级
+                    int payMoney = IGamerProfile.gameCharacter.characterDataList[(int)m_UpgradeCharacterId].LevelAToMoney.GetValue(
+                                                        IGamerProfile.Instance.playerdata.characterData[(int)m_UpgradeCharacterId].levelA);
                     IGamerProfile.Instance.PayMoney(new IGamerProfile.PayMoneyData(IGamerProfile.PayMoneyItem.PayMoneyItem_LevelCharacter,
-                                                IGamerProfile.gameCharacter.characterDataList[(int)m_UpgradeCharacterId].LevelAToMoney.GetValue(
-                                                        IGamerProfile.Instance.playerdata.characterData[(int)m_UpgradeCharacterId].levelA),
-                                                0,
-                                                PayMoneyCallback), this);
+                                                payMoney, 0, PayMoneyCallback), this);
+                    if (IGamerProfile.Instance.playerdata.playerMoney < payMoney)
+                    {
+                        HiddenCharacter();
+                    }
                     break;
                 }
             case CharacterAttribute.AttributeB:
                 {
                     //请求升级
+                    int payMoney = IGamerProfile.gameCharacter.characterDataList[(int)m_UpgradeCharacterId].LevelBToMoney.GetValue(
+                                                        IGamerProfile.Instance.playerdata.characterData[(int)m_UpgradeCharacterId].levelB);
                     IGamerProfile.Instance.PayMoney(new IGamerProfile.PayMoneyData(IGamerProfile.PayMoneyItem.PayMoneyItem_LevelCharacter,
-                                                IGamerProfile.gameCharacter.characterDataList[(int)m_UpgradeCharacterId].LevelBToMoney.GetValue(
-                                                        IGamerProfile.Instance.playerdata.characterData[(int)m_UpgradeCharacterId].levelB),
-                                                0,
-                                                PayMoneyCallback), this);
+                                                payMoney, 0, PayMoneyCallback), this);
+                    if (IGamerProfile.Instance.playerdata.playerMoney < payMoney)
+                    {
+                        HiddenCharacter();
+                    }
                     break;
                 }
         }
@@ -1678,21 +1684,27 @@ class UiSceneSelectGameCharacter : GuiUiSceneBase
             case CharacterAttribute.AttributeA:
                 {
                     //请求升级
+                    int payMoney = IGamerProfile.gameCharacter.characterDataList[(int)m_UpgradeCharacterId].LevelAToMoney.GetValue(
+                                                        IGamerProfile.Instance.playerdata.characterData[(int)m_UpgradeCharacterId].levelA);
                     IGamerProfile.Instance.PayMoney(new IGamerProfile.PayMoneyData(IGamerProfile.PayMoneyItem.PayMoneyItem_LevelCharacter,
-                                                IGamerProfile.gameCharacter.characterDataList[(int)m_UpgradeCharacterId].LevelAToMoney.GetValue(
-                                                        IGamerProfile.Instance.playerdata.characterData[(int)m_UpgradeCharacterId].levelA),
-                                                0,
-                                                PayMoneyCallback), this);
+                                                payMoney, 0, PayMoneyCallback), this);
+                    if (IGamerProfile.Instance.playerdata.playerMoney < payMoney)
+                    {
+                        HiddenCharacter();
+                    }
                     break;
                 }
             case CharacterAttribute.AttributeB:
                 {
                     //请求升级
+                    int payMoney = IGamerProfile.gameCharacter.characterDataList[(int)m_UpgradeCharacterId].LevelBToMoney.GetValue(
+                                                        IGamerProfile.Instance.playerdata.characterData[(int)m_UpgradeCharacterId].levelB);
                     IGamerProfile.Instance.PayMoney(new IGamerProfile.PayMoneyData(IGamerProfile.PayMoneyItem.PayMoneyItem_LevelCharacter,
-                                                IGamerProfile.gameCharacter.characterDataList[(int)m_UpgradeCharacterId].LevelBToMoney.GetValue(
-                                                        IGamerProfile.Instance.playerdata.characterData[(int)m_UpgradeCharacterId].levelB),
-                                                0,
-                                                PayMoneyCallback), this);
+                                                payMoney, 0, PayMoneyCallback), this);
+                    if (IGamerProfile.Instance.playerdata.playerMoney < payMoney)
+                    {
+                        HiddenCharacter();
+                    }
                     break;
                 }
         }
@@ -2078,21 +2090,27 @@ class UiSceneSelectGameCharacter : GuiUiSceneBase
             case CharacterAttribute.AttributeA:
                 {
                     //请求升级
+                    int payMoney = IGamerProfile.gameCharacter.characterDataList[(int)m_UpgradeCharacterId].LevelAToMoney.GetValue(
+                                                        IGamerProfile.Instance.playerdata.characterData[(int)m_UpgradeCharacterId].levelA);
                     IGamerProfile.Instance.PayMoney(new IGamerProfile.PayMoneyData(IGamerProfile.PayMoneyItem.PayMoneyItem_LevelCharacter,
-                                                IGamerProfile.gameCharacter.characterDataList[(int)m_UpgradeCharacterId].LevelAToMoney.GetValue(
-                                                        IGamerProfile.Instance.playerdata.characterData[(int)m_UpgradeCharacterId].levelA),
-                                                0,
-                                                PayMoneyCallback), this);
+                                                payMoney, 0, PayMoneyCallback), this);
+                    if (IGamerProfile.Instance.playerdata.playerMoney < payMoney)
+                    {
+                        HiddenCharacter();
+                    }
                     break;
                 }
             case CharacterAttribute.AttributeB:
                 {
                     //请求升级
+                    int payMoney = IGamerProfile.gameCharacter.characterDataList[(int)m_UpgradeCharacterId].LevelBToMoney.GetValue(
+                                                        IGamerProfile.Instance.playerdata.characterData[(int)m_UpgradeCharacterId].levelB);
                     IGamerProfile.Instance.PayMoney(new IGamerProfile.PayMoneyData(IGamerProfile.PayMoneyItem.PayMoneyItem_LevelCharacter,
-                                                IGamerProfile.gameCharacter.characterDataList[(int)m_UpgradeCharacterId].LevelBToMoney.GetValue(
-                                                        IGamerProfile.Instance.playerdata.characterData[(int)m_UpgradeCharacterId].levelB),
-                                                0,
-                                                PayMoneyCallback), this);
+                                                payMoney, 0, PayMoneyCallback), this);
+                    if (IGamerProfile.Instance.playerdata.playerMoney < payMoney)
+                    {
+                        HiddenCharacter();
+                    }
                     break;
                 }
         }
@@ -2225,6 +2243,7 @@ class UiSceneSelectGameCharacter : GuiUiSceneBase
 
     private void PayMoneyCallback(IGamerProfile.PayMoneyData paydata, bool isSucceed)
     {
+        ShowCharacter();
         if (m_UpgradeCharacterId == CharacterId.Null
             || paydata.item == IGamerProfile.PayMoneyItem.PayMoneyItem_ActiveCharacter)
         {
@@ -2356,11 +2375,15 @@ class UiSceneSelectGameCharacter : GuiUiSceneBase
         }
     }
 
+    void ShowCharacter()
+    {
+        Transform playerParent = m_PlayerArray[0].transform.parent;
+        QyFun.SetActive(playerParent.gameObject, true);
+    }
+
     void HiddenCharacter()
     {
-        for (int i = 0; i < m_PlayerArray.Length; i++)
-        {
-            QyFun.SetActive(m_PlayerArray[i], false);
-        }
+        Transform playerParent = m_PlayerArray[0].transform.parent;
+        QyFun.SetActive(playerParent.gameObject, false);
     }
 }

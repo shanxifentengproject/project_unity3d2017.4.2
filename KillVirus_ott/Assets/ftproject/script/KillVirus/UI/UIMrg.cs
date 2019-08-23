@@ -11,6 +11,7 @@ namespace UI
         [SerializeField] private UIRestartPanel restartPanel;
         [SerializeField] private UIFailedPanel failedPanel;
         [SerializeField] private UIExitPanel exitPanel;
+        //[SerializeField] private UIBuyCoinsPanel buyCoinsPanel;
 
         public UIMainPanel MainPanel { get { return mainPanel; } }
 
@@ -25,6 +26,8 @@ namespace UI
         public UIFailedPanel FailedPanel { get { return failedPanel; } }
 
         public UIExitPanel ExitPanel { get { return exitPanel; } }
+
+        //public UIBuyCoinsPanel BuyCoinsPanel { get { return buyCoinsPanel; } }
 
         internal KVGameMapManage m_MapManage;
 
