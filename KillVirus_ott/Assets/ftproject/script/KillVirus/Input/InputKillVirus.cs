@@ -186,7 +186,12 @@ public class InputKillVirus : MonoBehaviour
                 ClickEnterBt(ButtonState.UP);
             }
 
-            if (InputDevice.ButtonBackDown)
+            if (InputDevice.ButtonBack)
+            {
+                ClickEscBt(ButtonState.DOWN);
+                ClickEscBt(ButtonState.UP);
+            }
+            else if (InputDevice.ButtonBackDown)
             {
                 ClickEscBt(ButtonState.DOWN);
             }
